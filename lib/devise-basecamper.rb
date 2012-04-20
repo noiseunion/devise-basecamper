@@ -1,0 +1,9 @@
+require 'devise'
+require 'devise-basecamper/version'
+
+Devise.add_module(:basecamper,
+  :strategy   => false,
+  :route      => :session,
+  :controller => :sessions,
+  :model      => 'devise-basecamper/model'
+)
