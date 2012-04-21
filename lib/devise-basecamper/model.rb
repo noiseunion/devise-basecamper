@@ -22,7 +22,7 @@ module Devise
           if conditions[:subdomain].present?
               resource                                  = self.basecamper[:subdomain_class].to_s.camelize.constantize
               subdomain_source                          = resource.to_adapter.find_first(self.basecamper[:subdomain_field] => conditions[:subdomain])
-              conditions[self.basecamper[:scope_field]] = subdomain_source.id
+              conditions[self.basecamper[:scope_field]] = (subdomain_source.nil?) ? nil : subdomain_source.id
               conditions.delete(self.basecamper[:subdomain_field])
           end
           super

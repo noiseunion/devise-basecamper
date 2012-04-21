@@ -3,9 +3,8 @@ module Devise
     module Authenticatable
       module ClassMethods
         def find_for_authentication(conditions={})
-          puts "crapper"
           conditions.delete(:subdomain)
-          super
+          find_first_by_auth_conditions(conditions)
         end
       end
     end
