@@ -26,11 +26,6 @@ options that are already apart of devise itself.
 Open the Devise initializer file, which can be found in `config/initializers/devise.rb`, and make the following changes to the request_keys options.
 
 ```
-# Configure parameters from the request object used for authentication. Each entry
-# given should be a request method and it will automatically be passed to the
-# find_for_authentication method and considered in your model lookup. For instance,
-# if you set :request_keys to [:subdomain], :subdomain will be used on authentication.
-# The same considerations mentioned for authentication_keys also apply to request_keys.
 config.request_keys = [:subdomain]
 ```
 
