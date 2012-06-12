@@ -14,7 +14,7 @@ Gem::Specification.new do |gem|
   gem.name          = "devise-basecamper"
   gem.require_paths = ["lib"]
   gem.version       = Devise::Basecamper::VERSION
-  
-  gem.add_dependency('orm_adapter', '~> 0.0.7')
-  gem.add_dependency('devise', '~> 2.0.4')
+
+  gem.add_dependency('orm_adapter', '~> 0.1.0')
+  gem.add_dependency('devise', '~> 2.1.0')
 end
