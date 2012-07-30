@@ -108,6 +108,39 @@ If your application follows the assumptions, you DO NOT need to define any of th
 You can configure multiple models accordingly just as you can in Devise.  If you have a Devise model that does not need
 the additional features offered by Devise-Basecamper, simple do not include the module.  Devise will work just as expected.
 
+### Add some helpers to your Application controller
+
+You will need to add a helper method to your application controller, I would also recommend the validation for dealing with subdomains that do not belong
+to an account.
+
+**Helper Methods**
+```
+class ApplicationController < ActionController::Base
+	protect_from_forgery
+	helper_method :subdomain, :current_account
+	before_filter :validate_subdomain, :authenticate_user!
+	
+	private # ----------------------------------------------------
+	
+	def current_acount
+		# The where clause is assuming you are using Mongoid, change appropriately
+		# for ActiveRecord or a different supported ORM.
+		@current_account ||= Association.where(subdomain: subdomain).first
+	end
+	
+	def subdomain
+		request.subdomain
+	end
+	
+	# This will redirect the user to your 404 page if the account can not be found
+	# based on the subdomain.  You can change this to whatever best fits your 
+	# application.
+	def validate_subdomain
+		redirect_to '/404.html' if current_account.nil?
+	end
+end
+```
+
 ### ORM Compatability
 
 Devise-Basecamper has very minimal interaction with your data layer, however it uses the same `orm_adapter` gem as Devise
