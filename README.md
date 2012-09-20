@@ -183,6 +183,10 @@ and should work just fine with all of the ORM's supported by Devise.
 
 MORE TO COME
 
+### Contributing ###
+
+If you would like to contribute to this project, please fork it and submit pull requests with your code changes.  I'm pretty much making updates to this as needed for my own projects right now, so it doesn't change super often and help would definately be appreciated.
+
 ## License
 
 MIT License.  Copyright &copy; 2012 Digital Opera, LLC. [www.digitalopera.com](http://www.digitalopera.com/ "Digital Opera, LLC")
