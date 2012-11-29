@@ -35,12 +35,24 @@ module Devise
         # We want to override this method to find our users within the scope
         # of our subdomain.
         def send_reset_password_instructions(attributes={})
-          resource          = self.basecamper[:subdomain_class].to_s.camelize.constantize
-          subdomain_source  = resource.to_adapter.find_first(self.basecamper[:subdomain_field] => attributes[:subdomain])
-          recoverable       = find_or_initialize_with_errors([self.basecamper[:scope_field], :email], { :email => attributes[:email], self.basecamper[:scope_field] => (subdomain_source.nil? ? nil : subdomain_source.id.to_s) })
-          recoverable.send_reset_password_instructions if recoverable.persisted?
-          recoverable
+          send_instructions_for(:reset_password, attributes)
         end
+
+        def send_confirmation_instructions(attributes={})
+          send_instructions_for(:confirmation, attributes)
+        end
+
+        private
+
+          def send_instructions_for(action_method, attributes={})
+            resource          = self.basecamper[:subdomain_class].to_s.camelize.constantize
+            subdomain_source  = resource.to_adapter.find_first(self.basecamper[:subdomain_field] => attributes[:subdomain])
+            action_object     = find_or_initialize_with_errors([self.basecamper[:scope_field], :email], {
+              :email => attributes[:email], self.basecamper[:scope_field] => (subdomain_source.nil? ? nil : subdomain_source.id.to_s)
+            })
+            action_object.send("send_#{action_method.to_s}_instructions") if action_object.persisted?
+            action_object
+          end
       end
     end
   end
