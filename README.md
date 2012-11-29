@@ -161,6 +161,8 @@ equivelant in your application for `devise/passwords/new.html.erb` and add a hid
 You will then want to default its value to the subdomain we are scoping to.  This value will then be included in the
 form submit and processed properly by devise-basecamper.
 
+Support has also been added for confirmation emails thanks to juliobetta.
+
 Example form:
 ```
 <h2>Forgot your password?</h2>
