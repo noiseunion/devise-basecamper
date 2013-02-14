@@ -1,4 +1,5 @@
 # Devise::Basecamper
+[![Gem Version](https://badge.fury.io/rb/devise-basecamper.png)](http://badge.fury.io/rb/devise-basecamper)
 
 Devise-Basecamper was built to allow users of [Devise](https://github.com/plataformatec/devise) to implement "Basecamp" style subdomain scoped authentication with
 support for multiple users.  There are a lot of [great tutorials](https://github.com/RailsApps/rails3-subdomains) out
