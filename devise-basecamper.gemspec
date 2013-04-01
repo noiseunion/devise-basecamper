@@ -2,8 +2,8 @@
 require File.expand_path('../lib/devise-basecamper/version', __FILE__)
 
 Gem::Specification.new do |gem|
-  gem.authors       = ["JD Hendrickson"]
-  gem.email         = ["jd@digitalopera.com"]
+  gem.authors       = ["JD Hendrickson", "Grant Klinsing"]
+  gem.email         = ["jd@digitalopera.com", "grant@digitalopera.com"]
   gem.description   = %q{Implement basecamp style subdomain authentication with support for multiple users under a single subdomain scoped account.}
   gem.summary       = %q{Implement basecamp style subdomain authentication}
   gem.homepage      = "https://github.com/digitalopera/devise-basecamper"
