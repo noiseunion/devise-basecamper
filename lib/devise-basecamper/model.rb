@@ -19,6 +19,12 @@ module Devise
         end
 
         def find_for_authentication(conditions={})
+          if conditions[:login].present?
+            Rails.logger.debug "Login parameter is present."
+            Rails.logger.debug conditions.inspect
+            Rails.logger.debug Devise.authentication_keys.inspect
+          end
+
           if conditions[:subdomain].present?
               resource                                  = self.basecamper[:subdomain_class].to_s.camelize.constantize
               subdomain_source                          = resource.to_adapter.find_first(self.basecamper[:subdomain_field] => conditions[:subdomain])
@@ -27,6 +33,17 @@ module Devise
           end
           super
         end
+
+        ## Custom finder for devise authentication
+        ## def self.find_for_database_authentication(warden_conditions)
+        ##  conditions = warden_conditions.dup
+
+        ##  if login = conditions.delete(:login).downcase
+        ##    self.or({ email: login },{ username: login }).first
+        ##  else
+        ##    self.where(conditions).first
+        ##  end
+        ## end
 
         # TODO: Probably should break this out or atleast put some conditions in place
         # so that this method is only included when "RECOVERABLE" is a specified option
