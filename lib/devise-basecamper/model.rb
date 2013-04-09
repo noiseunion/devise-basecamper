@@ -42,6 +42,13 @@ module Devise
           super
         end
 
+        def find_for_database_authentication(conditions={})
+          Rails.logger.debug "=================================================="
+          Rails.logger.debug "find_for_database_authentication()"
+          Rails.logger.debug "=================================================="
+          super
+        end
+
         ## Custom finder for devise authentication
         ## def self.find_for_database_authentication(warden_conditions)
         ##  conditions = warden_conditions.dup
