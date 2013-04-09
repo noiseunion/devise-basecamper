@@ -20,10 +20,15 @@ module Devise
 
         def find_for_authentication(conditions={})
           authentication_keys = Devise.authentication_keys
-
+          Rails.logger.debug "================================================="
+          Rails.logger.debug "find_for_authentication()"
+          Rails.logger.debug "================================================="
           if conditions[:login].present? && authentication_keys.include?(:login)
             Rails.logger.debug "Login parameter is a valid authentication key..."
             Rails.logger.debug conditions.inspect
+            Rails.logger.debug Devise.authentication_keys.inspect
+          else
+            Rails.logger.debug "Login parameter is not a valid authentication key..."
             Rails.logger.debug Devise.authentication_keys.inspect
           end
 
