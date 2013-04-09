@@ -52,6 +52,7 @@ module Devise
           search_fields << self.basecamper[:scope_field]
 
           Rails.logger.debug "hi there you lame turd."
+          Rails.logger.debug search_fields.inspect
 
           # Execute the search
           action_object     = find_or_initialize_with_errors(search_fields, {
