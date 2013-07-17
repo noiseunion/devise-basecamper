@@ -29,7 +29,7 @@ module Devise
 
           ## Process if "login" key used instead of default (:email)
           if conditions[:login].present? && authentication_keys.include?(:login)
-            resource = find_with_login_instead_of_default(conditions)
+            resource = find_with_login_instead_of_default(authentication_keys, conditions)
             return resource
           end
 
@@ -57,10 +57,7 @@ module Devise
           scope_field           = self.basecamper[:scope_field].downcase.to_sym
           subdomain_resource    = find_subdomain_resource(attributes[:subdomain])
           subdomain_resource_id = subdomain_resource.nil? ? nil : subdomain_resource.id
-          ##reset_password_keys   = Devise.reset_password_keys
           required_keys         = Devise.send "#{action_method.to_s}_keys".to_sym
-
-          #resource = find_or_initialize_with_errors(required_keys, attributes)
 
           ## Find our resource for sending the email
           if attributes[:login].present? && reset_password_keys.include?(:login)
