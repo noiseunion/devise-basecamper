@@ -60,16 +60,16 @@ module Devise
           ##reset_password_keys   = Devise.reset_password_keys
           required_keys         = Devise.send "#{action_method.to_s}_keys".to_sym
 
-          resource = find_or_initialize_with_errors(required_keys, attributes)
+          #resource = find_or_initialize_with_errors(required_keys, attributes)
 
           ## Find our resource for sending the email
-          ##if attributes[:login].present? && reset_password_keys.include?(:login)
-          ##  resource = find_with_login_instead_of_default(attributes)
-          ##else
-          ##  resource = find_or_initialize_with_errors(reset_password_keys,{
-          ##    :email => attributes[:email], scope_field => subdomain_resource_id
-          ##  })
-          ##end
+          if attributes[:login].present? && reset_password_keys.include?(:login)
+            resource = find_with_login_instead_of_default(required_keys, attributes)
+          else
+            resource = find_or_initialize_with_errors(reset_password_keys,{
+              :email => attributes[:email], scope_field => subdomain_resource_id
+            })
+          end
 
           resource.send("send_#{action_method.to_s}_instructions") if !resource.nil? && resource.persisted?
           return resource
@@ -80,7 +80,7 @@ module Devise
         ## If devise is configured to allow authentication using either a username
         ## or email, as described in the wiki we will need to process the find
         ## appropriately.
-        def find_with_login_instead_of_default(conditions={})
+        def find_with_login_instead_of_default(required_keys={}, conditions={})
           resource      = nil
           scope_field   = self.basecamper[:scope_field]
           login_fields  = self.basecamper[:login_fields]
@@ -99,9 +99,11 @@ module Devise
             resource = new
 
             required_attributes.each do |key|
-              value = attributes[key]
-              resource.send("#{key}=", value)
-              resource.errors.add(key, value.present? ? error : :blank)
+              unless key == self.basecamper[:scope_field]
+                value = attributes[key]
+                resource.send("#{key}=", value)
+                resource.errors.add(key, value.present? ? error : :blank)
+              end
             end
           end
 
