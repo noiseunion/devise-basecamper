@@ -80,7 +80,7 @@ module Devise
         ## If devise is configured to allow authentication using either a username
         ## or email, as described in the wiki we will need to process the find
         ## appropriately.
-        def find_with_login_instead_of_default(required_attributes={}, conditions={})
+        def find_with_login_instead_of_default(required_attributes={}, attributes={})
           resource      = nil
           scope_field   = self.basecamper[:scope_field]
           login_fields  = self.basecamper[:login_fields]
@@ -88,8 +88,8 @@ module Devise
           login_fields.each do |login_field|
             login_field = login_field.downcase.to_sym
             resource    = to_adapter.find_first({
-              login_field => conditions[:login],
-              scope_field => conditions[scope_field]
+              login_field => attributes[:login],
+              scope_field => attributes[scope_field]
             })
 
             break unless resource.nil?
