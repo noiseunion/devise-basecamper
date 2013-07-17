@@ -57,16 +57,19 @@ module Devise
           scope_field           = self.basecamper[:scope_field].downcase.to_sym
           subdomain_resource    = find_subdomain_resource(attributes[:subdomain])
           subdomain_resource_id = subdomain_resource.nil? ? nil : subdomain_resource.id
-          reset_password_keys   = Devise.reset_password_keys
+          ##reset_password_keys   = Devise.reset_password_keys
+          required_keys         = Devise.send "#{action_method.to_s}_keys".to_sym
+
+          resource = find_or_initialize_with_errirs(required_keys, attributes)
 
           ## Find our resource for sending the email
-          if attributes[:login].present? && reset_password_keys.include?(:login)
-            resource = find_with_login_instead_of_default(attributes)
-          else
-            resource = find_or_initialize_with_errors(reset_password_keys,{
-              :email => attributes[:email], scope_field => subdomain_resource_id
-            })
-          end
+          ##if attributes[:login].present? && reset_password_keys.include?(:login)
+          ##  resource = find_with_login_instead_of_default(attributes)
+          ##else
+          ##  resource = find_or_initialize_with_errors(reset_password_keys,{
+          ##    :email => attributes[:email], scope_field => subdomain_resource_id
+          ##  })
+          ##end
 
           resource.send("send_#{action_method.to_s}_instructions") if !resource.nil? && resource.persisted?
           return resource
