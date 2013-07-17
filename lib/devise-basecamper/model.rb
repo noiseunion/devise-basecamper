@@ -60,7 +60,7 @@ module Devise
           ##reset_password_keys   = Devise.reset_password_keys
           required_keys         = Devise.send "#{action_method.to_s}_keys".to_sym
 
-          resource = find_or_initialize_with_errirs(required_keys, attributes)
+          resource = find_or_initialize_with_errors(required_keys, attributes)
 
           ## Find our resource for sending the email
           ##if attributes[:login].present? && reset_password_keys.include?(:login)
