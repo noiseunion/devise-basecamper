@@ -92,6 +92,16 @@ module Devise
             break unless resource.nil?
           end
 
+          unless resource
+            resource = new
+
+            required_attributes.each do |key|
+              value = attributes[key]
+              resource.send("#{key}=", value)
+              resource.errors.add(key, value.present? ? error : :blank)
+            end
+          end
+
           return resource
         end
 
