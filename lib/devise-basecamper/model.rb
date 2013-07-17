@@ -99,7 +99,7 @@ module Devise
             resource = new
 
             required_attributes.each do |key|
-              unless key == self.basecamper[:scope_field]
+              unless key == self.basecamper[:subdomain_field]
                 value = attributes[key]
                 resource.send("#{key}=", value)
                 resource.errors.add(key, value.present? ? error : :blank)
