@@ -16,5 +16,5 @@ Gem::Specification.new do |gem|
   gem.version       = Devise::Basecamper::VERSION
 
   gem.add_dependency('orm_adapter', '~> 0.1')
-  gem.add_dependency('devise', '~> 2.2.0')
+  gem.add_dependency('devise', '~> 3.0.0')
 end
