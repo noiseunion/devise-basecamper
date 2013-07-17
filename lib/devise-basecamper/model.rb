@@ -80,7 +80,7 @@ module Devise
         ## If devise is configured to allow authentication using either a username
         ## or email, as described in the wiki we will need to process the find
         ## appropriately.
-        def find_with_login_instead_of_default(required_keys={}, conditions={})
+        def find_with_login_instead_of_default(required_attributes={}, conditions={})
           resource      = nil
           scope_field   = self.basecamper[:scope_field]
           login_fields  = self.basecamper[:login_fields]
