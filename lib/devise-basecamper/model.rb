@@ -68,7 +68,7 @@ module Devise
             })
           end
 
-          resource.send("send_#{action_method.to_s}_instructions") if resource.persisted?
+          resource.send("send_#{action_method.to_s}_instructions") if !resource.nil? && resource.persisted?
           return resource
         end
 
