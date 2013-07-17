@@ -8,7 +8,8 @@ module Devise
           defaults = {
             :subdomain_class  => :account,
             :subdomain_field  => :subdomain,
-            :scope_field      => :account_id
+            :scope_field      => :account_id,
+            :login_fields     => [:username, :email]
           }
           @devise_basecamper_settings = defaults.merge(opts)
         end
@@ -18,13 +19,21 @@ module Devise
           return @devise_basecamper_settings
         end
 
+        ## Methods ------------------------------------------------------------
+
         def find_for_authentication(conditions={})
-          if conditions[:subdomain].present?
-              resource                                  = self.basecamper[:subdomain_class].to_s.camelize.constantize
-              subdomain_source                          = resource.to_adapter.find_first(self.basecamper[:subdomain_field] => conditions[:subdomain])
-              conditions[self.basecamper[:scope_field]] = (subdomain_source.nil?) ? nil : subdomain_source.id
-              conditions.delete(self.basecamper[:subdomain_field])
+          authentication_keys = Devise.authentication_keys
+
+          ## Process subdomain info by finding the parent resource id into the conditions
+          conditions = clean_conditions_for_subdomain(conditions)
+
+          ## Process if "login" key used instead of default (:email)
+          if conditions[:login].present? && authentication_keys.include?(:login)
+            resource = find_with_login_instead_of_default( authentication_keys, conditions )
+            return resource
           end
+
+          ## Execute original find_for_authentication code
           super
         end
 
@@ -45,13 +54,85 @@ module Devise
         private
 
         def send_instructions_for(action_method, attributes={})
-          resource          = self.basecamper[:subdomain_class].to_s.camelize.constantize
-          subdomain_source  = resource.to_adapter.find_first(self.basecamper[:subdomain_field] => attributes[:subdomain])
-          action_object     = find_or_initialize_with_errors([self.basecamper[:scope_field], :email], {
-            :email => attributes[:email], self.basecamper[:scope_field] => (subdomain_source.nil? ? nil : subdomain_source.id.to_s)
-          })
-          action_object.send("send_#{action_method.to_s}_instructions") if action_object.persisted?
-          action_object
+          scope_field           = self.basecamper[:scope_field].downcase.to_sym
+          subdomain_resource    = find_subdomain_resource(attributes[:subdomain])
+          subdomain_resource_id = subdomain_resource.nil? ? nil : subdomain_resource.id
+          required_keys         = Devise.send "#{action_method.to_s}_keys".to_sym
+
+          ## Find our resource for sending the email
+          if attributes[:login].present? && reset_password_keys.include?(:login)
+            resource = find_with_login_instead_of_default(required_keys, attributes)
+          else
+            resource = find_or_initialize_with_errors(reset_password_keys,{
+              :email => attributes[:email], scope_field => subdomain_resource_id
+            })
+          end
+
+          resource.send("send_#{action_method.to_s}_instructions") if !resource.nil? && resource.persisted?
+          return resource
+        end
+
+        private # -------------------------------------------------------------
+
+        ## If devise is configured to allow authentication using either a username
+        ## or email, as described in the wiki we will need to process the find
+        ## appropriately.
+        def find_with_login_instead_of_default(required_attributes={}, attributes={}, error=:invalid)
+          resource      = nil
+          scope_field   = self.basecamper[:scope_field]
+          login_fields  = self.basecamper[:login_fields]
+
+          attributes    = devise_parameter_filter.filter(attributes)
+
+          login_fields.each do |login_field|
+            login_field = login_field.downcase.to_sym
+            resource    = to_adapter.find_first({
+              login_field => attributes[:login],
+              scope_field => attributes[scope_field]
+            })
+
+            break unless resource.nil?
+          end
+
+          unless resource
+            resource = new
+
+            required_attributes.each do |key|
+              unless key == self.basecamper[:subdomain_field]
+                value = attributes[key]
+                resource.send("#{key}=", value)
+                resource.errors.add(key, value.present? ? error : :blank)
+              end
+            end
+          end
+
+          return resource
+        end
+
+        ## Clean the conditions and set them appropriately for finding the resource
+        ## with proper scoping.
+        def clean_conditions_for_subdomain(conditions={})
+          if conditions[:subdomain].present?
+            subdomain               = conditions[:subdomain]
+            scope_field             = self.basecamper[:scope_field]
+            subdomain_field         = self.basecamper[:subdomain_field]
+            subdomain_resource      = find_subdomain_resource(subdomain)
+            conditions[scope_field] = (subdomain_resource.nil?) ? nil : subdomain_resource.id
+
+            ## Remove the subdomain_field from the conditions - it is not needed
+            conditions.delete(subdomain_field)
+          end
+
+          return conditions
+        end
+
+        ## Search for the resource identified in the basecamper config and return it
+        ## to the caller
+        def find_subdomain_resource(subdomain)
+          resource            = self.basecamper[:subdomain_class].to_s.camelize.constantize
+          subdomain_field     = self.basecamper[:subdomain_field]
+
+          return resource.to_adapter.find_first(subdomain_field => subdomain)
         end
       end
     end
