@@ -29,7 +29,7 @@ module Devise
 
           ## Process if "login" key used instead of default (:email)
           if conditions[:login].present? && authentication_keys.include?(:login)
-            resource = find_with_login_instead_of_default(authentication_keys, conditions)
+            resource = find_with_login_instead_of_default( authentication_keys, conditions )
             return resource
           end
 
@@ -81,6 +81,8 @@ module Devise
           resource      = nil
           scope_field   = self.basecamper[:scope_field]
           login_fields  = self.basecamper[:login_fields]
+
+          attributes    = devise_parameter_filter.filter(attributes)
 
           login_fields.each do |login_field|
             login_field = login_field.downcase.to_sym
