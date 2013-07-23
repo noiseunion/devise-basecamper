@@ -7,6 +7,7 @@ Gem::Specification.new do |gem|
   gem.description   = %q{Implement basecamp style subdomain authentication with support for multiple users under a single subdomain scoped account.}
   gem.summary       = %q{Implement basecamp style subdomain authentication}
   gem.homepage      = "https://github.com/digitalopera/devise-basecamper"
+  gem.license       = 'MIT'
 
   gem.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   gem.files         = `git ls-files`.split("\n")
