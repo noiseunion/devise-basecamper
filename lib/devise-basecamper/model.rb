@@ -58,15 +58,10 @@ module Devise
           subdomain_resource    = find_subdomain_resource(attributes[:subdomain])
           subdomain_resource_id = subdomain_resource.nil? ? nil : subdomain_resource.id
           required_keys         = Devise.send "#{action_method.to_s}_keys".to_sym
-          
-          Rails.logger.debug "-"*30
-          Rails.logger.debug "BASECAMPER"
-          Rails.logger.debug "-"*30
-          Rails.logger.debug subdomain_resource
-          Rails.logger.debug "-"
 
           ## Find our resource for sending the email
           if attributes[:login].present? && reset_password_keys.include?(:login)
+            attributes[scope_field] = subdomain_resource_id
             resource = find_with_login_instead_of_default(required_keys, attributes)
           else
             resource = find_or_initialize_with_errors(reset_password_keys,{
@@ -92,6 +87,7 @@ module Devise
 
           login_fields.each do |login_field|
             login_field = login_field.downcase.to_sym
+
             resource    = to_adapter.find_first({
               login_field => attributes[:login],
               scope_field => attributes[scope_field]
