@@ -16,6 +16,6 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = Devise::Basecamper::VERSION
 
-  gem.add_dependency('orm_adapter', '~> 0.1')
-  gem.add_dependency('devise', '~> 3.2.0')
+  gem.add_dependency('orm_adapter', '>= 0.1')
+  gem.add_dependency('devise', '>= 3.1.0')
 end
