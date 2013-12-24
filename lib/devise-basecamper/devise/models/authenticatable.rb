@@ -1,3 +1,10 @@
+# lib/devise-basecamper/devise/models/authenticatable.rb
+#
+# This module will make sure to remove the subdomain field by default
+# from devise models that are NOT using basecamper.  That way the
+# finders will try searching on fields in your database that may not
+# exist.
+##
 module Devise
   module Models
     module Authenticatable
